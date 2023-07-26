@@ -42,7 +42,7 @@
   ---
 
 ### :fire: My Stats :
-<div style={{
+<div align="center" style={{
   justifyContent:"center"
 }}>
   
