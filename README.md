@@ -50,4 +50,4 @@
 
 ### :fire: My Stats :
   
-[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com?user=AhmetPalavan)](https://git.io/streak-stats)
+[![GitHub Streak](https://github-readme-streak-stats.herokuapp.com?user=AhmetPalavan&theme=react)](https://git.io/streak-stats)
