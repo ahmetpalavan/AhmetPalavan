@@ -46,8 +46,3 @@
      <img src="https://github.com/devicons/devicon/blob/master/icons/tailwindcss/tailwindcss-original.svg" title="TailwindCSS" alt="TailwindCSS" width="40" height="40"/>&nbsp;
      <img src="https://github.com/devicons/devicon/blob/master/icons/firebase/firebase-plain.svg" title="Firebase" alt="Firebase" width="40" height="40"/>&nbsp;
   
-  ---
-
-### :fire: My Stats :
-  
- [![GitHub Streak](http://github-readme-streak-stats.herokuapp.com?user=AhmetPalavan&theme=react&background=000000)](https://git.io/streak-stats)
