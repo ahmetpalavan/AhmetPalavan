@@ -37,8 +37,8 @@
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img src="https://streak-stats.demolab.com?user=ahmetpalavan&theme=tokyonight&hide_border=true&border_radius=10&card_width=700&card_height=200&background=1A1B27&ring=7AA2F7&fire=BB9AF7&currStreakNum=BB9AF7&currStreakLabel=BB9AF7&sideNums=7AA2F7&stroke=2F334D&date_format=j%20M%5B%20Y%5D" width="98%" alt="GitHub Streak" />
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=ahmetpalavan&theme=tokyonight" width="98%" alt="Contributions" />
+  <img src="https://streak-stats.demolab.com?user=ahmetpalavan&hide_border=true&border_radius=10&card_width=700&card_height=200&background=1A1B27&ring=7AA2F7&fire=BB9AF7&currStreakNum=BB9AF7&currStreakLabel=BB9AF7&sideNums=7AA2F7&sideLabels=C0CAF5&dates=787C99&stroke=2F334D&date_format=j%20M%5B%20Y%5D" width="98%" alt="GitHub Streak" />
+  <img src="./assets/contributions.svg" width="98%" alt="Contribution activity" />
 </div>
 
 <div align="center">
