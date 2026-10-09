@@ -7,22 +7,17 @@
 </a>
 
 <p>
-  <a href="https://www.linkedin.com/in/ahmet-palavan-625aa1247/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" /></a>
-  <a href="https://github.com/mecorporation"><img src="https://img.shields.io/badge/@mecorporation-1a1b27?style=for-the-badge&logo=github&logoColor=white" alt="mecorporation" /></a>
-  <img src="https://img.shields.io/badge/Turkey-E30A17?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Turkey" />
-</p>
-
-<p>
-  <img src="https://komarev.com/ghpvc/?username=ahmetpalavan&label=Profile%20views&color=7aa2f7&style=flat-square" alt="Profile views" />
-  <a href="https://github.com/ahmetpalavan?tab=followers"><img src="https://img.shields.io/github/followers/ahmetpalavan?label=Followers&style=flat-square&color=bb9af7&logo=github" alt="Followers" /></a>
-  <a href="https://github.com/ahmetpalavan?tab=repositories"><img src="https://img.shields.io/github/stars/ahmetpalavan?label=Stars&style=flat-square&color=e0af68&logo=github&affiliations=OWNER" alt="Stars" /></a>
+  <a href="https://www.linkedin.com/in/ahmet-palavan-625aa1247/"><img src="https://img.shields.io/badge/LinkedIn-1A1B27?style=for-the-badge&logo=linkedin&logoColor=7AA2F7" alt="LinkedIn" /></a>
+  <img src="https://img.shields.io/badge/Turkey-1A1B27?style=for-the-badge&logo=googlemaps&logoColor=BB9AF7" alt="Turkey" />
+  <a href="https://github.com/ahmetpalavan?tab=followers"><img src="https://img.shields.io/github/followers/ahmetpalavan?style=for-the-badge&logo=github&logoColor=C0CAF5&label=Followers&labelColor=1A1B27&color=7AA2F7" alt="Followers" /></a>
+  <a href="https://github.com/ahmetpalavan?tab=repositories"><img src="https://img.shields.io/github/stars/ahmetpalavan?style=for-the-badge&logo=github&logoColor=C0CAF5&label=Stars&labelColor=1A1B27&color=BB9AF7&affiliations=OWNER" alt="Stars" /></a>
 </p>
 
 </div>
 
 ## 👨‍💻 About Me
 
-- 💼 Software Engineer at **[@mecorporation](https://github.com/mecorporation)**, building web & mobile applications
+- 💼 Software Engineer building web & mobile applications
 - ⚛️ Most of my work: **TypeScript**, **Next.js**, **React** and **React Native / Expo**
 - 🤖 Lately: AI-powered products, from video generation to chatbots and SaaS tools
 - 🧩 I enjoy owning a product end-to-end: UI, API, database, deploy
