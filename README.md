@@ -1,32 +1,50 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:7aa2f7,100:bb9af7&height=200&section=header&text=Ahmet%20Palavan&fontSize=52&fontColor=ffffff&fontAlignY=36&desc=Software%20Engineer%20%E2%80%A2%20Web%20%E2%80%A2%20Mobile&descSize=18&descAlignY=56" width="100%" alt="Ahmet Palavan" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=26&duration=2800&pause=900&color=1F6FEB&center=true&vCenter=true&width=560&height=46&lines=Ahmet+Palavan;Software+Engineer;Web+%26+Mobile+%C2%B7+TypeScript">
+  <source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=26&duration=2800&pause=900&color=0969DA&center=true&vCenter=true&width=560&height=46&lines=Ahmet+Palavan;Software+Engineer;Web+%26+Mobile+%C2%B7+TypeScript">
+  <img alt="Ahmet Palavan — Software Engineer, Web and Mobile" src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=26&duration=2800&pause=900&color=1F6FEB&center=true&vCenter=true&width=560&height=46&lines=Ahmet+Palavan;Software+Engineer;Web+%26+Mobile+%C2%B7+TypeScript">
+</picture>
 
-<p>
-  <a href="https://www.linkedin.com/in/ahmet-palavan-625aa1247/"><img src="https://img.shields.io/badge/LinkedIn-1A1B27?style=for-the-badge&logo=linkedin&logoColor=7AA2F7" alt="LinkedIn" /></a>
-  <img src="https://img.shields.io/badge/Turkey-1A1B27?style=for-the-badge&logo=googlemaps&logoColor=BB9AF7" alt="Turkey" />
-  <a href="https://github.com/ahmetpalavan?tab=followers"><img src="https://img.shields.io/github/followers/ahmetpalavan?style=for-the-badge&logo=github&logoColor=C0CAF5&label=Followers&labelColor=1A1B27&color=7AA2F7" alt="Followers" /></a>
-  <a href="https://github.com/ahmetpalavan?tab=repositories"><img src="https://img.shields.io/github/stars/ahmetpalavan?style=for-the-badge&logo=github&logoColor=C0CAF5&label=Stars&labelColor=1A1B27&color=BB9AF7&affiliations=OWNER" alt="Stars" /></a>
-</p>
-
-<img src="./assets/terminal.svg" width="98%" alt="whoami: Ahmet Palavan, Software Engineer building web and mobile apps with TypeScript, Next.js, React and React Native" />
+<a href="https://www.linkedin.com/in/ahmet-palavan-625aa1247/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-1F6FEB?style=for-the-badge&logo=linkedin&logoColor=white"></a>
+<a href="https://github.com/ahmetpalavan"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-1F6FEB?style=for-the-badge&logo=github&logoColor=white"></a>
 
 </div>
 
-## 🛠️ Tech Stack
+---
+
+## About
+
+Software Engineer based in Turkey, building web and mobile products with TypeScript. Most of my work is Next.js and React on the web and React Native with Expo on mobile, backed by Node.js and NestJS services over PostgreSQL, MongoDB, Firebase and Supabase.
+
+Lately I have been focused on AI-powered products: video generation tools, chatbots and SaaS apps. I like owning a product end to end, from the UI and API to the database and the deploy, with Tailwind, shadcn/ui, TanStack Query and Zustand on the front end and Prisma on the back end.
+
+---
+
+## Statistics
 
 <div align="center">
-  <img src="https://skillicons.dev/icons?i=ts,js,react,nextjs,tailwind,nodejs,nestjs,prisma,postgres,mongodb,firebase,supabase,docker,vercel,git,figma&perline=8" alt="Tech stack" />
-</div>
 
-## 📊 GitHub Stats
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/overview-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/overview-light.svg">
+  <img alt="Overview: followers, stargazers, repositories, contributions, active days and best day" width="100%" src="./assets/overview-dark.svg">
+</picture>
 
-<div align="center">
-  <img src="https://streak-stats.demolab.com?user=ahmetpalavan&hide_border=true&border_radius=10&card_width=700&card_height=200&background=1A1B27&ring=7AA2F7&fire=BB9AF7&currStreakNum=BB9AF7&currStreakLabel=BB9AF7&sideNums=7AA2F7&sideLabels=C0CAF5&dates=787C99&stroke=2F334D&date_format=j%20M%5B%20Y%5D" width="98%" alt="GitHub Streak" />
-  <img src="./assets/contributions.svg" width="98%" alt="Contribution activity" />
-  <img src="./assets/city.svg" width="98%" alt="3D contribution city" />
-</div>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=ahmetpalavan&theme=github-dark-blue&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460">
+  <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=ahmetpalavan&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460&background=FFFFFF&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=0969DA&sideLabels=1F2328&dates=656D76&stroke=D0D7DE">
+  <img alt="Contribution streak statistics" width="57%" src="https://streak-stats.demolab.com?user=ahmetpalavan&theme=github-dark-blue&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460">
+</picture>
 
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:7aa2f7,100:bb9af7&height=110&section=footer" width="100%" alt="footer" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/activity-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/activity-light.svg">
+  <img alt="Contributions per month over the last 12 months" width="41%" src="./assets/activity-dark.svg">
+</picture>
+
+<br><br>
+
+<img alt="Profile views" src="https://komarev.com/ghpvc/?username=ahmetpalavan&color=1F6FEB&style=for-the-badge&label=PROFILE+VIEWS">
+
 </div>
