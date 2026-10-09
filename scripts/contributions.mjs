@@ -1,9 +1,10 @@
-// Renders assets/contributions.svg: a last-12-months contribution chart
-// styled to match the README banner. Needs GITHUB_TOKEN in the environment.
+// Renders assets/contributions.svg (last-12-months chart) and assets/city.svg
+// (isometric 3D contribution calendar), styled to match the README banner.
+// Needs GITHUB_TOKEN in the environment.
 import { mkdir, writeFile } from "node:fs/promises";
 
 const USER = process.env.GH_USER || "ahmetpalavan";
-const OUT = process.env.OUT || "assets/contributions.svg";
+const OUT_DIR = process.env.OUT_DIR || "assets";
 
 const W = 700;
 const H = 200;
@@ -46,8 +47,11 @@ async function fetchWeeks() {
     start: w.contributionDays[0].date,
     total: w.contributionDays.reduce((s, d) => s + d.contributionCount, 0),
   }));
-  const activeDays = cal.weeks.flatMap((w) => w.contributionDays).filter((d) => d.contributionCount > 0).length;
-  return { total: cal.totalContributions, weeks, activeDays };
+  const days = cal.weeks.flatMap((w, c) =>
+    w.contributionDays.map((d) => ({ c, r: new Date(d.date + "T00:00:00Z").getUTCDay(), count: d.contributionCount })),
+  );
+  const activeDays = days.filter((d) => d.count > 0).length;
+  return { total: cal.totalContributions, weeks, days, activeDays };
 }
 
 // Catmull-Rom spline through the points, with control points clamped to the
@@ -134,7 +138,84 @@ function render({ total, weeks, activeDays }) {
 `;
 }
 
+// --- 3D city ---------------------------------------------------------------
+
+const CITY_W = 700;
+const WEEK = [11.4, 3.4]; // screen offset of one week step
+const DAY = [-7.2, 4.6]; // screen offset of one weekday step
+const MAX_TOWER = 70;
+const GAP = 0.12;
+
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const toHex = (rgb) => "#" + rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+const mix = (a, b, t) => toHex(hex(a).map((v, i) => v + (hex(b)[i] - v) * t));
+const shade = (h, f) => toHex(hex(h).map((v) => v * f));
+
+function towerColor(t) {
+  return t < 0.5 ? mix("#2B3A6E", C.blue, t * 2) : mix(C.blue, C.purple, (t - 0.5) * 2);
+}
+
+function renderCity({ total, days }) {
+  const best = Math.max(1, ...days.map((d) => d.count));
+  const cols = Math.max(...days.map((d) => d.c)) + 1;
+  const height = (count) => (count === 0 ? 2 : 4 + Math.sqrt(count / best) * (MAX_TOWER - 4));
+  const x0 = (CITY_W - (cols * WEEK[0] - 7 * DAY[0])) / 2 - 7 * DAY[0];
+  // Lift the board just enough that the tallest tower clears the top edge.
+  const y0 = 22 + Math.max(...days.map((d) => height(d.count) - d.c * WEEK[1] - d.r * DAY[1]));
+  const CITY_H = Math.round(y0 + cols * WEEK[1] + 7 * DAY[1] + 16);
+
+  const pt = ([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`;
+  const columns = [];
+  for (let c = 0; c < cols; c++) {
+    const cells = days.filter((d) => d.c === c).sort((a, b) => a.r - b.r);
+    const shapes = cells.map(({ r, count }) => {
+      const base = [x0 + (c + GAP / 2) * WEEK[0] + (r + GAP / 2) * DAY[0], y0 + (c + GAP / 2) * WEEK[1] + (r + GAP / 2) * DAY[1]];
+      const a = [WEEK[0] * (1 - GAP), WEEK[1] * (1 - GAP)];
+      const b = [DAY[0] * (1 - GAP), DAY[1] * (1 - GAP)];
+      const h = height(count);
+      const top = count === 0 ? "#24283B" : towerColor((count / best) ** 0.7);
+      const T0 = [base[0], base[1] - h];
+      const T1 = [T0[0] + a[0], T0[1] + a[1]];
+      const T3 = [T0[0] + b[0], T0[1] + b[1]];
+      const T2 = [T1[0] + b[0], T1[1] + b[1]];
+      const down = ([x, y]) => [x, y + h];
+      return (
+        `<polygon points="${pt(T3)} ${pt(T2)} ${pt(down(T2))} ${pt(down(T3))}" fill="${shade(top, 0.72)}"/>` +
+        `<polygon points="${pt(T1)} ${pt(T2)} ${pt(down(T2))} ${pt(down(T1))}" fill="${shade(top, 0.52)}"/>` +
+        `<polygon points="${pt(T0)} ${pt(T1)} ${pt(T2)} ${pt(T3)}" fill="${top}"/>`
+      );
+    });
+    const begin = (0.2 + c * 0.025).toFixed(3);
+    columns.push(
+      `<g opacity="0"><animate attributeName="opacity" from="0" to="1" begin="${begin}s" dur="0.5s" fill="freeze"/>` +
+        `<animateTransform attributeName="transform" type="translate" from="0 14" to="0 0" begin="${begin}s" dur="0.5s" fill="freeze"/>` +
+        shapes.join("") +
+        `</g>`,
+    );
+  }
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${CITY_W}" height="${CITY_H}" viewBox="0 0 ${CITY_W} ${CITY_H}" role="img" aria-label="3D contribution calendar: ${total} contributions in the last year">
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, sans-serif; }
+    .num { font-size: 24px; font-weight: 700; fill: url(#text); }
+    .sub { font-size: 12px; fill: ${C.muted}; }
+    .title { font-size: 15px; font-weight: 600; fill: ${C.title}; }
+  </style>
+  <defs>
+    <linearGradient id="text" x1="0" x2="1"><stop offset="0" stop-color="${C.blue}"/><stop offset="1" stop-color="${C.purple}"/></linearGradient>
+  </defs>
+  <rect x="0.5" y="0.5" width="${CITY_W - 1}" height="${CITY_H - 1}" rx="10" fill="${C.bg}"/>
+  ${columns.join("\n  ")}
+  <text x="${CITY_W - 28}" y="38" class="title" text-anchor="end">Contribution city</text>
+  <text x="${CITY_W - 28}" y="56" class="sub" text-anchor="end">one tower per day · last 12 months</text>
+  <text x="28" y="${CITY_H - 42}" class="num">${total.toLocaleString("en-US")}</text>
+  <text x="28" y="${CITY_H - 22}" class="sub">contributions in the last year · best day ${best}</text>
+</svg>
+`;
+}
+
 const data = await fetchWeeks();
-await mkdir(OUT.split("/").slice(0, -1).join("/") || ".", { recursive: true });
-await writeFile(OUT, render(data));
-console.log(`wrote ${OUT}: ${data.total} contributions, ${data.weeks.length} weeks`);
+await mkdir(OUT_DIR, { recursive: true });
+await writeFile(`${OUT_DIR}/contributions.svg`, render(data));
+await writeFile(`${OUT_DIR}/city.svg`, renderCity(data));
+console.log(`wrote ${OUT_DIR}/contributions.svg and ${OUT_DIR}/city.svg: ${data.total} contributions, ${data.weeks.length} weeks`);
