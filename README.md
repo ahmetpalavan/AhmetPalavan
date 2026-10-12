@@ -26,9 +26,9 @@ Lately I have been focused on AI-powered products: video generation tools, chatb
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=ahmetpalavan&theme=github-dark-blue&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460">
-  <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com?user=ahmetpalavan&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460&background=FFFFFF&ring=0969DA&fire=0969DA&currStreakNum=1F2328&sideNums=1F2328&currStreakLabel=0969DA&sideLabels=1F2328&dates=656D76&stroke=D0D7DE">
-  <img alt="Contribution streak statistics" width="57%" src="https://streak-stats.demolab.com?user=ahmetpalavan&theme=github-dark-blue&hide_border=true&border_radius=10&date_format=j%20M%5B%20Y%5D&card_width=460">
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/streak-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/streak-light.svg">
+  <img alt="Total contributions, current streak and longest streak" width="57%" src="./assets/streak-dark.svg">
 </picture>
 
 <picture>

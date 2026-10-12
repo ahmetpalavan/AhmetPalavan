@@ -1,5 +1,7 @@
-// Renders assets/activity-{dark,light}.svg: contributions per month over the
-// last 12 months, in light and dark variants. Needs GITHUB_TOKEN in the environment.
+// Renders the profile cards in light and dark variants:
+//   assets/activity-{dark,light}.svg  contributions per month over the last 12 months
+//   assets/streak-{dark,light}.svg    all-time total, current and longest streak
+// Needs GITHUB_TOKEN in the environment.
 import { mkdir, writeFile } from "node:fs/promises";
 
 const USER = process.env.GH_USER || "ahmetpalavan";
@@ -7,32 +9,47 @@ const OUT_DIR = process.env.OUT_DIR || "assets";
 
 // GitHub Primer colors, so the cards sit naturally on either profile theme.
 const THEMES = {
-  dark: { border: "#30363D", muted: "#8B949E", accent: "#58A6FF", bar: "#1F6FEB", grid: "#21262D" },
-  light: { border: "#D0D7DE", muted: "#656D76", accent: "#0969DA", bar: "#0969DA", grid: "#EAEEF2" },
+  dark: { border: "#30363D", fg: "#E6EDF3", muted: "#8B949E", accent: "#58A6FF", bar: "#1F6FEB", grid: "#21262D" },
+  light: { border: "#D0D7DE", fg: "#1F2328", muted: "#656D76", accent: "#0969DA", bar: "#0969DA", grid: "#EAEEF2" },
 };
 
 const FONT = `-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif`;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-async function fetchStats() {
-  const query = `query($login: String!) {
-    user(login: $login) {
-      contributionsCollection {
-        contributionCalendar {
-          totalContributions
-          weeks { contributionDays { date contributionCount } }
-        }
-      }
+async function graphql(query, variables) {
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: { Authorization: `bearer ${process.env.GITHUB_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables }),
+    });
+    // The endpoint throws the odd 502 under load; give it a couple more tries.
+    if (res.status >= 500 && attempt < 3) {
+      await new Promise((r) => setTimeout(r, 2000 * attempt));
+      continue;
     }
-  }`;
-  const res = await fetch("https://api.github.com/graphql", {
-    method: "POST",
-    headers: { Authorization: `bearer ${process.env.GITHUB_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ query, variables: { login: USER } }),
-  });
-  const json = await res.json();
-  if (!res.ok || json.errors) throw new Error(JSON.stringify(json.errors || json));
-  const cal = json.data.user.contributionsCollection.contributionCalendar;
+    const body = await res.text();
+    const json = res.ok ? JSON.parse(body) : null;
+    if (!json || json.errors) throw new Error(json ? JSON.stringify(json.errors) : `HTTP ${res.status}: ${body.slice(0, 200)}`);
+    return json.data;
+  }
+}
+
+const CALENDAR = `contributionCalendar {
+  totalContributions
+  weeks { contributionDays { date contributionCount } }
+}`;
+
+async function fetchStats() {
+  const { user } = await graphql(
+    `query($login: String!) {
+      user(login: $login) {
+        contributionsCollection { contributionYears ${CALENDAR} }
+      }
+    }`,
+    { login: USER },
+  );
+  const cal = user.contributionsCollection.contributionCalendar;
   const days = cal.weeks.flatMap((w) => w.contributionDays);
 
   const perMonth = new Map();
@@ -42,10 +59,65 @@ async function fetchStats() {
   }
   const months = [...perMonth.entries()].slice(-12).map(([key, total]) => ({ key, total }));
 
-  return { contributions: cal.totalContributions, months };
+  // Streaks need every day since the first contribution, but one collection spans
+  // at most a year, so ask for each contribution year under its own alias.
+  const now = new Date().toISOString();
+  const years = user.contributionsCollection.contributionYears.map((y) => {
+    const to = `${y}-12-31T23:59:59Z` < now ? `${y}-12-31T23:59:59Z` : now;
+    return `y${y}: contributionsCollection(from: "${y}-01-01T00:00:00Z", to: "${to}") { ${CALENDAR} }`;
+  });
+  const history = await graphql(`query($login: String!) { user(login: $login) { ${years.join("\n")} } }`, { login: USER });
+  const byDate = new Map();
+  for (const c of Object.values(history.user)) {
+    for (const d of c.contributionCalendar.weeks.flatMap((w) => w.contributionDays)) byDate.set(d.date, d.contributionCount);
+  }
+  const allDays = [...byDate.entries()]
+    .filter(([date]) => date <= now.slice(0, 10))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, count]) => ({ date, count }));
+
+  return { contributions: cal.totalContributions, months, ...streaks(allDays) };
+}
+
+// allDays is one entry per calendar day, oldest first, ending today.
+function streaks(allDays) {
+  const total = allDays.reduce((sum, d) => sum + d.count, 0);
+  const first = allDays.find((d) => d.count > 0)?.date;
+
+  let longest = { length: 0 };
+  let run = null;
+  for (const d of allDays) {
+    run = d.count > 0 ? { start: run?.start ?? d.date, end: d.date, length: (run?.length ?? 0) + 1 } : null;
+    if (run && run.length > longest.length) longest = run;
+  }
+
+  // Today is still in progress, so an empty today doesn't break the streak yet.
+  let end = allDays.length - 1;
+  if (end >= 0 && allDays[end].count === 0) end--;
+  let start = end + 1;
+  while (start > 0 && allDays[start - 1].count > 0) start--;
+  const current = start <= end ? { start: allDays[start].date, end: allDays[end].date, length: end - start + 1 } : { length: 0 };
+
+  return { total, first, current, longest };
 }
 
 const fmt = (n) => n.toLocaleString("en-US");
+
+// "Oct 3" this year, "Oct 3, 2025" otherwise.
+function fmtDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const day = `${MONTHS[m - 1]} ${d}`;
+  return y === new Date().getUTCFullYear() ? day : `${day}, ${y}`;
+}
+
+function range(r) {
+  if (!r.length) return "No active streak";
+  if (r.start === r.end) return fmtDate(r.start);
+  const [from, to] = [fmtDate(r.start), fmtDate(r.end)];
+  // "Aug 25 – Sep 17, 2024" rather than the year on both ends.
+  return r.start.slice(0, 4) === r.end.slice(0, 4) ? `${from.split(",")[0]} – ${to}` : `${from} – ${to}`;
+}
+const days = (n) => `<tspan class="unit"> ${n === 1 ? "day" : "days"}</tspan>`;
 
 function activity(s, t) {
   const W = 340;
@@ -92,9 +164,53 @@ function activity(s, t) {
 `;
 }
 
+// Same 200px height as the activity card, so the two line up side by side.
+function streak(s, t) {
+  const W = 472;
+  const H = 200;
+  const col = W / 3;
+  const cells = [
+    { value: fmt(s.total), label: "Total contributions", sub: s.first ? `${fmtDate(s.first)} – Present` : "No contributions yet" },
+    { value: `${s.current.length}${days(s.current.length)}`, label: "Current streak", sub: range(s.current), accent: true },
+    { value: `${s.longest.length}${days(s.longest.length)}`, label: "Longest streak", sub: range(s.longest) },
+  ]
+    .map((c, i) => {
+      const x = (col * (i + 0.5)).toFixed(1);
+      return `<text x="${x}" y="110" class="value${c.accent ? " accent" : ""}" text-anchor="middle">${c.value}</text>
+  <text x="${x}" y="136" class="label" text-anchor="middle">${c.label}</text>
+  <text x="${x}" y="156" class="sub" text-anchor="middle">${c.sub}</text>`;
+    })
+    .join("\n  ");
+  const dividers = [1, 2]
+    .map((i) => `<line x1="${(col * i).toFixed(1)}" x2="${(col * i).toFixed(1)}" y1="84" y2="164" stroke="${t.grid}"/>`)
+    .join("\n  ");
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${fmt(s.total)} contributions in total, current streak ${s.current.length} days, longest streak ${s.longest.length} days">
+  <style>
+    text { font-family: ${FONT}; }
+    .title { font-size: 17px; font-weight: 600; fill: ${t.accent}; }
+    .value { font-size: 30px; font-weight: 600; fill: ${t.fg}; }
+    .accent { fill: ${t.accent}; }
+    .unit { font-size: 13px; font-weight: 400; fill: ${t.muted}; }
+    .label { font-size: 12px; font-weight: 600; fill: ${t.fg}; }
+    .sub { font-size: 11px; fill: ${t.muted}; }
+  </style>
+  <rect x="0.5" y="0.5" width="${W - 1}" height="${H - 1}" rx="8" fill="none" stroke="${t.border}"/>
+  <text x="20" y="32" class="title">Contribution streak</text>
+  <text x="${W - 16}" y="31" class="sub" text-anchor="end">all time</text>
+  ${dividers}
+  ${cells}
+</svg>
+`;
+}
+
 const stats = await fetchStats();
 await mkdir(OUT_DIR, { recursive: true });
 for (const [name, theme] of Object.entries(THEMES)) {
   await writeFile(`${OUT_DIR}/activity-${name}.svg`, activity(stats, theme));
+  await writeFile(`${OUT_DIR}/streak-${name}.svg`, streak(stats, theme));
 }
-console.log(`wrote activity cards to ${OUT_DIR}/: ${stats.contributions} contributions, ${stats.months.length} months`);
+console.log(
+  `wrote cards to ${OUT_DIR}/: ${stats.contributions} contributions in 12 months, ${stats.total} all time, ` +
+    `current streak ${stats.current.length}, longest ${stats.longest.length}`,
+);

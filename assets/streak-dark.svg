@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="472" height="200" viewBox="0 0 472 200" role="img" aria-label="3,580 contributions in total, current streak 1 days, longest streak 24 days">
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif; }
+    .title { font-size: 17px; font-weight: 600; fill: #58A6FF; }
+    .value { font-size: 30px; font-weight: 600; fill: #E6EDF3; }
+    .accent { fill: #58A6FF; }
+    .unit { font-size: 13px; font-weight: 400; fill: #8B949E; }
+    .label { font-size: 12px; font-weight: 600; fill: #E6EDF3; }
+    .sub { font-size: 11px; fill: #8B949E; }
+  </style>
+  <rect x="0.5" y="0.5" width="471" height="199" rx="8" fill="none" stroke="#30363D"/>
+  <text x="20" y="32" class="title">Contribution streak</text>
+  <text x="456" y="31" class="sub" text-anchor="end">all time</text>
+  <line x1="157.3" x2="157.3" y1="84" y2="164" stroke="#21262D"/>
+  <line x1="314.7" x2="314.7" y1="84" y2="164" stroke="#21262D"/>
+  <text x="78.7" y="110" class="value" text-anchor="middle">3,580</text>
+  <text x="78.7" y="136" class="label" text-anchor="middle">Total contributions</text>
+  <text x="78.7" y="156" class="sub" text-anchor="middle">May 15, 2022 – Present</text>
+  <text x="236.0" y="110" class="value accent" text-anchor="middle">1<tspan class="unit"> day</tspan></text>
+  <text x="236.0" y="136" class="label" text-anchor="middle">Current streak</text>
+  <text x="236.0" y="156" class="sub" text-anchor="middle">Oct 12</text>
+  <text x="393.3" y="110" class="value" text-anchor="middle">24<tspan class="unit"> days</tspan></text>
+  <text x="393.3" y="136" class="label" text-anchor="middle">Longest streak</text>
+  <text x="393.3" y="156" class="sub" text-anchor="middle">Aug 25 – Sep 17, 2024</text>
+</svg>
