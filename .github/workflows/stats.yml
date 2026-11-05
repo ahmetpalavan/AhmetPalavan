@@ -1,0 +1,36 @@
+name: Update stats cards
+
+on:
+  schedule:
+    - cron: "30 20 * * *" # every day at 23:30 Turkey time (UTC+3)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stats
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Render cards
+        env:
+          # STATS_TOKEN is a personal token so private contributions are counted too;
+          # without it the built-in token only sees public activity.
+          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
+        run: node scripts/stats.mjs
+      - name: Commit if changed
+        run: |
+          git diff --quiet -- assets && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          git commit -m "Update stats cards"
+          git push
