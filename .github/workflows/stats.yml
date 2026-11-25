@@ -2,7 +2,9 @@ name: Update stats cards
 
 on:
   schedule:
-    - cron: "30 20 * * *" # every day at 23:30 Turkey time (UTC+3)
+    # Hourly, at a minute away from :00 where GitHub's scheduler is busiest and
+    # starts runs hours late. Runs that change nothing don't commit.
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
